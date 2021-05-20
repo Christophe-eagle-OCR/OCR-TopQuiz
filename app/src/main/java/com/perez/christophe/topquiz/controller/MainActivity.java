@@ -12,20 +12,21 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.perez.christophe.topquiz.R;
+import com.perez.christophe.topquiz.model.User;
 
 public class MainActivity extends AppCompatActivity {
 
     private TextView mGreetingText;
     private EditText mNameInput;
     private Button mPlayButton;
-
+    private User mUser; // 1/3 : pour contenir les information de mon utilisateur
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
+        mUser = new User(); // 2/3 : pour initialiser la variable mUser
 
         mGreetingText = (TextView) findViewById(R.id.activity_main_greeting_txt);
         mNameInput = (EditText) findViewById(R.id.activity_main_name_input);
@@ -55,9 +56,15 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // user clicked the button for change first view for second view
+                Intent gameActivityIntent = new Intent(MainActivity.this, GameActivity.class);
+                startActivity(gameActivityIntent);
 
-
-
+                // 3/3 : pour enregistrer le prénon de l'utilisateur
+                // for memory the firstName when user clicked button on first view
+                // je recupere le prénon qui se situe dans le champ mNameInput ( et sera stocké dans la variable firstmane ci dessous)
+                // puis je valorise mon utilisateur mUser avec le setteur en lui passant en parametre le firstname
+                String firstname = mNameInput.getText().toString();
+                mUser.setFirstname(firstname);
             }
         });
 

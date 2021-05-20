@@ -24,9 +24,9 @@ public class QuestionBank {
 
     /**
      * fournir une nouvelle question quand on le lui demandera
-     * TODO methode nextGetQuestionToto à renomer par getQuestion
+     * TODO methode getNextQuestion peut etre à renommer par getQuestion
      */
-    public Question nextGetQuestionToto() {
+    public Question getNextQuestion() {
         // Ensure we Loop over the questions and return a new one at each call
         if (mNextQuestionIndex == mQuestionList.size()) {
             mNextQuestionIndex = 0;

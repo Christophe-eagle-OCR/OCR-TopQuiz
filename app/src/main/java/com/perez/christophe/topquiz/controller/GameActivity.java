@@ -3,8 +3,10 @@ package com.perez.christophe.topquiz.controller;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.perez.christophe.topquiz.R;
 import com.perez.christophe.topquiz.model.Question;
@@ -12,7 +14,7 @@ import com.perez.christophe.topquiz.model.QuestionBank;
 
 import java.util.Arrays;
 
-public class GameActivity extends AppCompatActivity {
+public class GameActivity extends AppCompatActivity implements View.OnClickListener {
 
     private TextView mQuestionTextView;
     private Button mAnswerButton1;
@@ -21,7 +23,7 @@ public class GameActivity extends AppCompatActivity {
     private Button mAnswerButton4;
 
     private QuestionBank mQuestionBank;
-    private QuestionBank mCurrentQuestion;
+    private Question mCurrentQuestion;
 
 
     @Override
@@ -29,9 +31,7 @@ public class GameActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
 
-
         mQuestionBank = this.generateQuestions();
-
 
         // Wire widgets
         mQuestionTextView = (TextView) findViewById(R.id.activity_game_question_text);
@@ -46,6 +46,28 @@ public class GameActivity extends AppCompatActivity {
         mAnswerButton3.setTag(2);
         mAnswerButton4.setTag(3);
 
+        // enregistre pour chaque bouton l'actvité courante pour appeler la methodse onClick
+        mAnswerButton1.setOnClickListener(this);
+        mAnswerButton2.setOnClickListener(this);
+        mAnswerButton3.setOnClickListener(this);
+        mAnswerButton4.setOnClickListener(this);
+
+        mCurrentQuestion = mQuestionBank.getNextQuestion();
+        this.displayQuestion(mCurrentQuestion);
+    }
+
+    // cette methode va etre appelé quelque soit le bouton sur lequel l'utilisateur va clicker
+    @Override
+    public void onClick(View v) {
+        int responseIndex = (int) v.getTag();
+
+        if (responseIndex == mCurrentQuestion.getAnswerIndex()) {
+            // Good answer
+            Toast.makeText(this,"Correct",Toast.LENGTH_SHORT).show();
+        } else {
+            //Wrong answer
+            Toast.makeText(this,"Wrong answer!",Toast.LENGTH_SHORT).show();
+        }
     }
 
     private  void displayQuestion(final Question question) {

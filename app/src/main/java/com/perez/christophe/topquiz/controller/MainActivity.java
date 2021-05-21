@@ -52,6 +52,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        // pour intercepter le click du bouton mPlayButton
+
         mPlayButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

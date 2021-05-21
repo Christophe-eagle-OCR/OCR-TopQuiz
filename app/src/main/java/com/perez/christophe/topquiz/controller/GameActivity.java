@@ -1,7 +1,9 @@
 package com.perez.christophe.topquiz.controller;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -25,6 +27,8 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     private QuestionBank mQuestionBank;
     private Question mCurrentQuestion;
 
+    private int mScore;  // 1/3 score de l'utilisateur
+    private  int nNumberOfQuestions; // 1/3 nbr de questions posées à l'utilisateur
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +36,9 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_game);
 
         mQuestionBank = this.generateQuestions();
+
+        mScore = 0; // 2/3 score de l'utilisateur, ici score egal 0
+        nNumberOfQuestions = 4;   // 2/3 nbr de questions posées à l'utilisateur, ici 4 questions
 
         // Wire widgets
         mQuestionTextView = (TextView) findViewById(R.id.activity_game_question_text);
@@ -64,10 +71,41 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         if (responseIndex == mCurrentQuestion.getAnswerIndex()) {
             // Good answer
             Toast.makeText(this,"Correct",Toast.LENGTH_SHORT).show();
+            mScore++; // 3/3 score de l'utilisateur
         } else {
             //Wrong answer
             Toast.makeText(this,"Wrong answer!",Toast.LENGTH_SHORT).show();
         }
+
+        // Quand l'utilisateur a répondu 4 fois de suite pour donner les reponses, on arrete le jeuu
+        if (--nNumberOfQuestions == 0) {
+            // PM  : avec l'opératueur -- devant mNumberOfQuestions, on va décrementer lorsque l'utilisateur répond à une question
+            //quand on arrive à 0 , il n'y a plus de question , c'est End the game
+
+            endGame(); // methode pour gerer l'affichage dans la boite de dialogue à la fin du jeu
+
+        } else {
+            // sinon au continu le jeu , on va demander au model une nouvelle question et on va l'afficher à l'écran
+            mCurrentQuestion = mQuestionBank.getNextQuestion();
+            displayQuestion(mCurrentQuestion);
+        }
+    }
+
+    // methode pour gerer l'affichage dans la boite de dialogue à la fin du jeu
+    private void endGame () {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        builder.setTitle("Well done!")
+                .setMessage("Your score is " +mScore)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // End the activity , ferme l'affichage courant du layout Activity_Game , et donc seul le layout activity_main apparaitra
+                        finish();
+                    }
+                })
+                .create()
+                .show();
     }
 
     private  void displayQuestion(final Question question) {

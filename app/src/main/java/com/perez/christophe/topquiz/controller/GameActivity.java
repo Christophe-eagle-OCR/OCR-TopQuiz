@@ -4,6 +4,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -29,6 +30,8 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
     private int mScore;  // 1/3 score de l'utilisateur
     private  int nNumberOfQuestions; // 1/3 nbr de questions posées à l'utilisateur
+
+    public static final String BUNDLE_EXTRA_SCORE = "BUNDLE_EXTRA_SCORE";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,7 +104,11 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         // End the activity , ferme l'affichage courant du layout Activity_Game , et donc seul le layout activity_main apparaitra
-                        finish();
+                        // finish(); methode initiale mais on ajoute un intent ci dessous pour récuperer le score au démarrage du jeu
+                        Intent intent = new Intent(); // on crée un intent
+                        intent.putExtra(BUNDLE_EXTRA_SCORE,mScore); // on attache le score à l'intent stocké dans la variable  BUNDLE_EXTRA_SCORE
+                        setResult(RESULT_OK,intent); // on précise à android que l'acivité c'est correctement terminée avec le score attaché à l'intent
+                        finish(); // on termine l'activité
                     }
                 })
                 .create()

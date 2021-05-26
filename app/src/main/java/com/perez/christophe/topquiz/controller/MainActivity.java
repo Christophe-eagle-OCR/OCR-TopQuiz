@@ -1,5 +1,6 @@
 package com.perez.christophe.topquiz.controller;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -20,6 +21,17 @@ public class MainActivity extends AppCompatActivity {
     private EditText mNameInput;
     private Button mPlayButton;
     private User mUser; // 1/3 : pour contenir les information de mon utilisateur
+    public static final int GAME_ACTIVITY_REQUEST_CODE = 42;
+
+    // pour recuperer le renvoie du resultat du score de GAmeActivity
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (GAME_ACTIVITY_REQUEST_CODE == requestCode && RESULT_OK == resultCode) {
+            // Fetch (chercher) the score from the Intent
+            int score = data.getIntExtra(GameActivity.BUNDLE_EXTRA_SCORE, 0);
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,13 +65,15 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // pour intercepter le click du bouton mPlayButton
+        // ici c'est le bouton de demarrage du jeu le bouton mPlayButton
 
         mPlayButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // user clicked the button for change first view for second view
                 Intent gameActivityIntent = new Intent(MainActivity.this, GameActivity.class);
-                startActivity(gameActivityIntent);
+                // startActivity(gameActivityIntent); methode initiale mais est remplacée par la methode ci dessous pour récuperer le score au démarrage du jeu
+                startActivityForResult(gameActivityIntent,GAME_ACTIVITY_REQUEST_CODE);
 
                 // 3/3 : pour enregistrer le prénon de l'utilisateur
                 // for memory the firstName when user clicked button on first view
@@ -69,6 +83,8 @@ public class MainActivity extends AppCompatActivity {
                 mUser.setFirstname(firstname);
             }
         });
+
+
 
     }
 }

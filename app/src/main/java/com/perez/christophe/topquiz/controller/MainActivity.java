@@ -29,18 +29,6 @@ public class MainActivity extends AppCompatActivity {
     public static final String  PREF_KEY_FIRSTNAME ="PREF_KEY_FIRSTNAME"; //  constante preference utilisateur
 
 
-    // pour recuperer le renvoie du resultat du score de GAmeActivity
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data); // TODO voir si cette ligne super (constructeur) est utile? , car n'existe pas dans le code du cours
-        if (GAME_ACTIVITY_REQUEST_CODE == requestCode && RESULT_OK == resultCode) {
-            // Fetch (chercher) the score from the Intent
-            int score = data.getIntExtra(GameActivity.BUNDLE_EXTRA_SCORE, 0);
-
-            mPreferences.edit().putInt(PREF_KEY_SCORE,score).apply(); // 4/4 : pour stocker le score utilisateur dans mpreferences du telephone
-        }
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,6 +43,8 @@ public class MainActivity extends AppCompatActivity {
         mPlayButton = (Button) findViewById(R.id.activity_main_play_btn);
 
         mPlayButton.setEnabled(false);
+
+        greetUser();  // 2/3 on appelle la methode greetUser
 
         mNameInput.addTextChangedListener(new TextWatcher() {
             @Override
@@ -95,8 +85,36 @@ public class MainActivity extends AppCompatActivity {
                 mPreferences.edit().putString(PREF_KEY_FIRSTNAME,mUser.getFirstname()).apply(); // 3/4 : pour enregistrer le prenon de l'utilisateur dans le telephone
             }
         });
+    }
 
+    // pour recuperer le renvoie du resultat du score de GAmeActivity
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data); // TODO voir si cette ligne super (constructeur) est utile? , car n'existe pas dans le code du cours
+        if (GAME_ACTIVITY_REQUEST_CODE == requestCode && RESULT_OK == resultCode) {
+            // Fetch (chercher) the score from the Intent
+            int score = data.getIntExtra(GameActivity.BUNDLE_EXTRA_SCORE, 0);
 
+            mPreferences.edit().putInt(PREF_KEY_SCORE,score).apply(); // 4/4 : pour stocker le score utilisateur dans mpreferences du telephone
 
+            greetUser(); // 3/3 on appelle la methode greetUser
+        }
+    }
+
+    // 1/3 , on crée la methode greetUser ( saluer l'utilisateur)
+    // pour afficher : dire bonjour à l'utilisateur, son score precedent et si il sera meilleur cette fois
+    private void greetUser(){
+        String  firstname = mPreferences.getString(PREF_KEY_FIRSTNAME,null);
+
+        if (null != firstname) {
+            int score = mPreferences.getInt(PREF_KEY_SCORE,0);
+            String fulltext = "Welcome back," + firstname
+                    +"!\nYour last score was" + score
+                    +", will you do better this time?";
+            mGreetingText.setText(fulltext);
+            mNameInput.setText(firstname);
+            mNameInput.setSelection(firstname.length());
+            mPlayButton.setEnabled(true);
+        }
     }
 }

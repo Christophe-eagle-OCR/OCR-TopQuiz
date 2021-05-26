@@ -25,6 +25,9 @@ public class MainActivity extends AppCompatActivity {
     public static final int GAME_ACTIVITY_REQUEST_CODE = 42;
     private SharedPreferences mPreferences; // 1/4 pour sauvegarder les preferences utilisateur dans le telephone
 
+    public static final String PREF_KEY_SCORE = "PREF_KEY_SCORE"; // constante preference utilisateur
+    public static final String  PREF_KEY_FIRSTNAME ="PREF_KEY_FIRSTNAME"; //  constante preference utilisateur
+
 
     // pour recuperer le renvoie du resultat du score de GAmeActivity
     @Override
@@ -34,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
             // Fetch (chercher) the score from the Intent
             int score = data.getIntExtra(GameActivity.BUNDLE_EXTRA_SCORE, 0);
 
-            mPreferences.edit().putInt("score",score).apply(); // 4/4 : pour stocker le score utilisateur dans mpreferences du telephone
+            mPreferences.edit().putInt(PREF_KEY_SCORE,score).apply(); // 4/4 : pour stocker le score utilisateur dans mpreferences du telephone
         }
     }
 
@@ -89,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
                 String firstname = mNameInput.getText().toString();
                 mUser.setFirstname(firstname);
 
-                mPreferences.edit().putString("firstname",mUser.getFirstname()).apply(); // 3/4 : pour enregistrer le prenon de l'utilisateur dans le telephone
+                mPreferences.edit().putString(PREF_KEY_FIRSTNAME,mUser.getFirstname()).apply(); // 3/4 : pour enregistrer le prenon de l'utilisateur dans le telephone
             }
         });
 

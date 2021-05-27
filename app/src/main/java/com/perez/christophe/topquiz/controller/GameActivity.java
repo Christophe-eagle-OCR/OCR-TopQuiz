@@ -6,6 +6,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -33,6 +36,8 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
     public static final String BUNDLE_EXTRA_SCORE = "BUNDLE_EXTRA_SCORE";
 
+    private boolean mEnableTouchEvents;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,6 +47,8 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
         mScore = 0; // 2/3 score de l'utilisateur, ici score egal 0
         nNumberOfQuestions = 4;   // 2/3 nbr de questions posées à l'utilisateur, ici 4 questions
+
+        mEnableTouchEvents = true;
 
         // Wire widgets
         mQuestionTextView = (TextView) findViewById(R.id.activity_game_question_text);
@@ -80,18 +87,35 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             Toast.makeText(this,"Wrong answer!",Toast.LENGTH_SHORT).show();
         }
 
-        // Quand l'utilisateur a répondu 4 fois de suite pour donner les reponses, on arrete le jeuu
-        if (--nNumberOfQuestions == 0) {
-            // PM  : avec l'opératueur -- devant mNumberOfQuestions, on va décrementer lorsque l'utilisateur répond à une question
-            //quand on arrive à 0 , il n'y a plus de question , c'est End the game
+        mEnableTouchEvents = false;
 
-            endGame(); // methode pour gerer l'affichage dans la boite de dialogue à la fin du jeu
+        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mEnableTouchEvents = true;
 
-        } else {
-            // sinon au continu le jeu , on va demander au model une nouvelle question et on va l'afficher à l'écran
-            mCurrentQuestion = mQuestionBank.getNextQuestion();
-            displayQuestion(mCurrentQuestion);
-        }
+                // If this is the last question , ends the game.
+                // Else display the next question.
+
+                // Quand l'utilisateur a répondu 4 fois de suite pour donner les reponses, on arrete le jeuu
+                if (--nNumberOfQuestions == 0) {
+                    // PM  : avec l'opératueur -- devant mNumberOfQuestions, on va décrementer lorsque l'utilisateur répond à une question
+                    //quand on arrive à 0 , il n'y a plus de question , c'est End the game
+
+                    endGame(); // methode pour gerer l'affichage dans la boite de dialogue à la fin du jeu
+
+                } else {
+                    // sinon au continu le jeu , on va demander au model une nouvelle question et on va l'afficher à l'écran
+                    mCurrentQuestion = mQuestionBank.getNextQuestion();
+                    displayQuestion(mCurrentQuestion);
+                }
+            }
+        }, 2000); // LENGTH_SHORT is usually 2 second long
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        return mEnableTouchEvents && super.dispatchTouchEvent(ev);
     }
 
     // methode pour gerer l'affichage dans la boite de dialogue à la fin du jeu

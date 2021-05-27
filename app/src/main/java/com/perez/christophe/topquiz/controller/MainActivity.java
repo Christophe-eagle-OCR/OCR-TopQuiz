@@ -108,9 +108,9 @@ public class MainActivity extends AppCompatActivity {
 
         if (null != firstname) {
             int score = mPreferences.getInt(PREF_KEY_SCORE,0);
-            String fulltext = "Welcome back," + firstname
-                    +"!\nYour last score was" + score
-                    +", will you do better this time?";
+            String fulltext = "Welcome back, " + firstname
+                    + "!\nYour last score was " + score
+                    + " , will you do better this time ?";
             mGreetingText.setText(fulltext);
             mNameInput.setText(firstname);
             mNameInput.setSelection(firstname.length());

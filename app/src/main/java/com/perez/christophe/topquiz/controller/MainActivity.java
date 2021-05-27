@@ -34,6 +34,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        System.out.println("MainActivity::onCreate()");
+
         mUser = new User(); // 2/3 : pour initialiser la variable mUser
 
         mPreferences = getPreferences(MODE_PRIVATE); // 2/4 : pour initialiser la variable mPreferences
@@ -116,5 +118,40 @@ public class MainActivity extends AppCompatActivity {
             mNameInput.setSelection(firstname.length());
             mPlayButton.setEnabled(true);
         }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        System.out.println("MainActivity::onStart()");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        System.out.println("MainActivity::onResume()");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        System.out.println("MainActivity::onPause()");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        System.out.println("MainActivity::onStop()");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        System.out.println("MainActivity::onDestroy()");
     }
 }

@@ -1,5 +1,6 @@
 package com.perez.christophe.topquiz.controller;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -32,9 +33,11 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     private Question mCurrentQuestion;
 
     private int mScore;  // 1/3 score de l'utilisateur
-    private  int nNumberOfQuestions; // 1/3 nbr de questions posées à l'utilisateur
+    private  int mNumberOfQuestions; // 1/3 nbr de questions posées à l'utilisateur
 
     public static final String BUNDLE_EXTRA_SCORE = "BUNDLE_EXTRA_SCORE";
+    public static final String BUNDLE_STATE_SCORE = "currentScore";
+    public static final String BUNDLE_STATE_QUESTION = "currentQuestion";
 
     private boolean mEnableTouchEvents;
 
@@ -47,8 +50,13 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
         mQuestionBank = this.generateQuestions();
 
-        mScore = 0; // 2/3 score de l'utilisateur, ici score egal 0
-        nNumberOfQuestions = 4;   // 2/3 nbr de questions posées à l'utilisateur, ici 4 questions
+        if (savedInstanceState != null){
+            mScore = savedInstanceState.getInt(BUNDLE_STATE_SCORE);
+            mNumberOfQuestions = savedInstanceState.getInt(BUNDLE_STATE_QUESTION);
+        } else {
+            mScore = 0; // 2/3 score de l'utilisateur, ici score egal 0
+            mNumberOfQuestions = 4;   // 2/3 nbr de questions posées à l'utilisateur, ici 4 questions
+        }
 
         mEnableTouchEvents = true;
 
@@ -73,6 +81,16 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
         mCurrentQuestion = mQuestionBank.getNextQuestion();
         this.displayQuestion(mCurrentQuestion);
+    }
+
+    // lors de la rotation de l'ecran , une nouvelle activity est crée , il faut donc memoriser l'etat du telephone avant la rotation
+    // on memorise donc l'etat dans lequel on se trouve , cad le score et la question courante
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putInt(BUNDLE_STATE_SCORE,mScore);
+        outState.putInt(BUNDLE_STATE_QUESTION,mNumberOfQuestions);
+
+        super.onSaveInstanceState(outState);
     }
 
     // cette methode va etre appelé quelque soit le bouton sur lequel l'utilisateur va clicker
@@ -100,7 +118,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                 // Else display the next question.
 
                 // Quand l'utilisateur a répondu 4 fois de suite pour donner les reponses, on arrete le jeuu
-                if (--nNumberOfQuestions == 0) {
+                if (--mNumberOfQuestions == 0) {
                     // PM  : avec l'opératueur -- devant mNumberOfQuestions, on va décrementer lorsque l'utilisateur répond à une question
                     //quand on arrive à 0 , il n'y a plus de question , c'est End the game
 
